@@ -46,7 +46,7 @@ simulations = []
 
 urllc_load = 0.5
 no_urllc = rho2urllc(urllc_load)
-mmtc_loads = np.linspace(0.1, 1, 10)
+mmtc_loads = np.linspace(0.1, 1.5, 15)
 no_mmtc_list = [rho2mmtc(rho) for rho in mmtc_loads]
 
 scheduler = "RR_F"
