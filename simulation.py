@@ -49,10 +49,11 @@ class Simulation:
             self.pilot_strategy = config.get('strategy')
 
         self.strategy_mapping = {
-            'FCFS': self.__fist_come_first_served,
-            'RR_Q': self.__round_robin_queue_info,
-            'RR_F': self.__round_robin_no_queue_info_first_come_first_served,
-            'RR_RR': self.__round_robin_half_queue_info
+            'FCFS_FCFS': self.__fist_come_first_served,
+            'RRQ_RRQ': self.__round_robin_queue_info,
+            'RRQ_FCFS': self.__round_robin_queue_first_come_first_served,
+            'RRN_FCFS': self.__round_robin_no_queue_info_first_come_first_served,
+            'RRN_RRQ': self.__round_robin_half_queue_info
         }
         self.event_heap = EventHeap()
         self.send_queue = {'_URLLC': [], '_mMTC': []}
@@ -262,6 +263,37 @@ class Simulation:
                         del event
                     else:
                         return
+
+    def __round_robin_queue_first_come_first_served(self):
+        no_pilots = self.no_pilots
+        _urllc_nodes = self.Slices[self._URLLC].pool
+        for _node in _urllc_nodes:
+            ind = _urllc_nodes.index(_node)
+            events = list(filter(lambda e: e.node_id == ind, self.send_queue['_URLLC']))
+            for event in events:
+                no_pilots -= _node.pilot_samples
+                if no_pilots >= 0:
+                    entry = event.get_entry(self.time, True)
+                    self.trace.write_trace(entry)
+                    self.send_queue['_URLLC'].remove(event)
+                    del event
+                else:
+                    return
+
+        if no_pilots > 0:
+            mmtc_events = self.send_queue['_mMTC']
+            mmtc_events.sort(key=lambda x: x.dead_time, reverse=True)
+            for event in mmtc_events:
+                mmtc_pilots = self.Slices[self._mMTC].get_node(event.node_id).pilot_samples
+                no_pilots -= mmtc_pilots
+                if no_pilots >= 0:
+                    entry = event.get_entry(self.time, True)
+                    # print(entry)
+                    self.trace.write_trace(entry)
+                    self.send_queue['_mMTC'].remove(event)
+                    del event
+                else:
+                    break
 
     def __round_robin_half_queue_info(self):
         self.frame_counter = (self.frame_counter + 1) % self.frame_loops
