@@ -306,7 +306,7 @@ class Simulation:
             no_pilots -= _node.pilot_samples
             if no_pilots >= 0:
                 self.node_pointer += 1
-                _node.active = False
+                _node.assigned = True
             else:
                 no_pilots += _node.pilot_samples
                 break
@@ -338,7 +338,7 @@ class Simulation:
             no_pilots -= _node.pilot_samples
             if no_pilots >= 0:
                 self.node_pointer += 1
-                _node.active = False
+                _node.assigned = True
             else:
                 no_pilots += _node.pilot_samples
                 break
