@@ -50,14 +50,14 @@ no_mmtc = rho2mmtc(mmtc_load)
 urllc_loads = np.linspace(0.1, 1, 10)
 no_urllc_list = [rho2urllc(rho) for rho in urllc_loads]
 
-scheduler = "FCFS_FCFS"
-for no_urllc in no_urllc_list:
-    SEED += np.random.randint(100)
-    simulations.append("python3 main.py \
-                        --scheduler {} --reliability {} --deadline {} \
-                        --urllc_node {} --mmtc_node {} \
-                        --seed {}".format(
-        scheduler, reliability, deadline, no_urllc, no_mmtc, SEED))
+# scheduler = "FCFS_FCFS"
+# for no_urllc in no_urllc_list:
+#     SEED += np.random.randint(100)
+#     simulations.append("python3 main.py \
+#                         --scheduler {} --reliability {} --deadline {} \
+#                         --urllc_node {} --mmtc_node {} \
+#                         --seed {}".format(
+#         scheduler, reliability, deadline, no_urllc, no_mmtc, SEED))
 
 scheduler = "RRN_FCFS"
 for no_urllc in no_urllc_list:
@@ -69,13 +69,13 @@ for no_urllc in no_urllc_list:
         scheduler, reliability, deadline, no_urllc, no_mmtc, SEED))
 
 scheduler = "RRQ_FCFS"
-for no_urllc in no_urllc_list:
-    SEED += np.random.randint(100)
-    simulations.append("python3 main.py \
-                        --scheduler {} --reliability {} --deadline {} \
-                        --urllc_node {} --mmtc_node {} \
-                        --seed {}".format(
-        scheduler, reliability, deadline, no_urllc, no_mmtc, SEED))
+# for no_urllc in no_urllc_list:
+#     SEED += np.random.randint(100)
+#     simulations.append("python3 main.py \
+#                         --scheduler {} --reliability {} --deadline {} \
+#                         --urllc_node {} --mmtc_node {} \
+#                         --seed {}".format(
+#         scheduler, reliability, deadline, no_urllc, no_mmtc, SEED))
 
 
 pool = Pool(processes=PROCESSES)
