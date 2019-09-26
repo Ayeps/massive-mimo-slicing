@@ -77,13 +77,13 @@ class Trace:
             if not pilots[ind]:
                 np.delete(wait_time, ind)
         avg_wait = np.mean(wait_time)
-        var_wait = np.var(wait_time)
-        if var_wait > 0.0:
+        std_wait = np.std(wait_time)
+        if std_wait > 0.0:
             con_interval = st.t.interval(0.95, len(wait_time) - 1, loc=avg_wait, scale=st.sem(wait_time))
         else:
             con_interval = (avg_wait, avg_wait)
 
-        return avg_wait, var_wait, con_interval[0], con_interval[1]
+        return avg_wait, std_wait, con_interval[0], con_interval[1]
 
     def __get_urllc_loss(self):
         pilots = self.urllc['pilot']
@@ -110,12 +110,12 @@ class Trace:
             if not pilots[ind]:
                 np.delete(wait_time, ind)
         avg_wait = np.mean(wait_time)
-        var_wait = np.var(wait_time)
-        if var_wait > 0.0:
+        std_wait = np.std(wait_time)
+        if std_wait > 0.0:
             con_interval = st.t.interval(0.95, len(wait_time) - 1, loc=avg_wait, scale=st.sem(wait_time))
         else:
             con_interval = (avg_wait, avg_wait)
-        return avg_wait, var_wait, con_interval[0], con_interval[1]
+        return avg_wait, std_wait, con_interval[0], con_interval[1]
 
     def print_results(self):
         print("------------------------------------------------------")
