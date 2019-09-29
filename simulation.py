@@ -50,6 +50,7 @@ class Simulation:
 
         self.strategy_mapping = {
             'FCFS_FCFS': self.__fist_come_first_served,
+            'FCFS_RRQ': self.__fist_come_first_served_round_roboin,
             'RRQ_RRQ': self.__round_robin_queue_info,
             'RRQ_FCFS': self.__round_robin_queue_first_come_first_served,
             'RRN_FCFS': self.__round_robin_no_queue_info_first_come_first_served,
@@ -232,6 +233,41 @@ class Simulation:
                     self.send_queue['_mMTC'].remove(event)
                 else:
                     break
+
+    def __fist_come_first_served_round_roboin(self):
+        no_pilots = self.no_pilots
+        urllc_events = self.send_queue['_URLLC'].copy()
+        mmtc_events = self.send_queue['_mMTC'].copy()
+
+        urllc_events.sort(key=lambda x: x.dead_time)
+        for event in urllc_events:
+            urllc_pilots = self.Slices[self._URLLC].get_node(event.node_id).pilot_samples
+            no_pilots -= urllc_pilots
+            if no_pilots >= 0:
+                # remove the event that assigned the pilots from the list
+                entry = event.get_entry(self.time, True)
+                # print(entry)
+                self.trace.write_trace(entry)
+                self.send_queue['_URLLC'].remove(
+                    event)  # print(no_pilots, len(self.send_queue['_URLLC']), len(urllc_events))
+            else:
+                # print("pilot not enough")
+                break
+
+            if no_pilots > 0:
+                _mmtc_nodes = self.Slices[self._mMTC].pool
+                for _node in _mmtc_nodes:
+                    ind = _mmtc_nodes.index(_node)
+                    events = list(filter(lambda e: e.node_id == ind, self.send_queue['_mMTC']))
+                    for event in events:
+                        no_pilots -= _node.pilot_samples
+                        if no_pilots >= 0:
+                            entry = event.get_entry(self.time, True)
+                            self.trace.write_trace(entry)
+                            self.send_queue['_mMTC'].remove(event)
+                            del event
+                        else:
+                            return
 
     def __round_robin_queue_info(self):
         no_pilots = self.no_pilots
