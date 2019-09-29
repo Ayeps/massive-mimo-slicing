@@ -25,8 +25,8 @@ period = {"long": 10,
 pilots = {"high": 3,
           "low": 1}
 
-reliability = "high"
-deadline = "short"
+reliability = "low"
+deadline = "long"
 
 urllc_period = period[deadline]
 urllc_pilot = pilots[reliability]
