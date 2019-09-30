@@ -237,7 +237,6 @@ class Simulation:
     def __fist_come_first_served_round_roboin(self):
         no_pilots = self.no_pilots
         urllc_events = self.send_queue['_URLLC'].copy()
-        mmtc_events = self.send_queue['_mMTC'].copy()
 
         urllc_events.sort(key=lambda x: x.dead_time)
         for event in urllc_events:
